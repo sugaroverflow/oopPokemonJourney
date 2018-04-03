@@ -1,0 +1,306 @@
+// Theme
+// ---------------------------------------------------------------------------
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Source+Sans+Pro');
+
+$primary          : #4EB4F8;
+$secondary        : #d5b546;
+$tertiary         : #91CD86;
+$quaternary       : #E7ACA2;
+$quinary          : #818DAD;
+$light            : #FFF;
+$dark             : #333;
+$black            : #000;
+$text-dark        : #212121;
+$text-light       : #DBDFE1;
+$code-background  : #282A35;
+$overlay          : transparentize(#000, .5);
+$font-size        : 28px;
+$font-size-impact : 128px;
+$font             : "Source Sans Pro";
+$font-title       : "Montserrat";
+$font-fixed       : "Monaco", monospace;
+$margin           : 20px;
+$iframe-scale     : 1.5;
+
+
+// CSS Base
+// ---------------------------------------------------------------------------
+
+* { box-sizing: border-box; }
+body { font-family: $font; }
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 $margin 0;
+  font-family: $font-title;
+}
+h1 {
+  color: $primary;
+}
+h2 { color: $secondary; }
+h3 { color: $tertiary; }
+li { margin-bottom: .25em; };
+pre, code {
+  text-align: left;
+  font-family: $font-fixed;
+  color: $secondary;
+  background: $code-background;
+}
+a, a:visited, a:hover, a:active { color: $text-light; }
+img { vertical-align: inherit; }
+blockquote {
+  border-left: 8px solid;
+  padding-left: .5em;
+  color: $tertiary;
+  text-align: left;
+  margin: 1em 0;
+  & > p { margin: 0; }
+}
+
+
+// Remark base
+// ---------------------------------------------------------------------------
+
+.remark-code {
+  font-size: .9em;
+}
+.remark-container { background: $dark; }
+.remark-slide-scaler { box-shadow: none; }
+.remark-notes { font-size: 1.5em; }
+
+.remark-slide-content {
+  font-size: $font-size;
+  padding: 1em 2em;
+  color: $text-light;
+  background: $black;
+  background-size: cover;
+}
+
+.remark-slide-number {
+  color: $text-light;
+  right: 1em;
+  opacity: .6;
+  font-size: 0.8em;
+  z-index: 2;
+  .no-counter & { display: none; }
+}
+
+
+// Utilities
+// ---------------------------------------------------------------------------
+
+// Positioning
+.side-layer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding: 0 2em;
+}
+.middle { &, & img, & span { vertical-align: middle; } };
+.top { vertical-align: top; };
+.bottom { vertical-align: bottom; };
+.inline-block {
+  p, ul, ol, blockquote {
+    display: inline-block;
+    text-align: left;
+  }
+}
+.no-margin { &, & > p, & > pre, & > ul, & > ol { margin: 0; } }
+.no-padding { padding: 0; }
+.space-left { padding-left: 1em; }
+.space-right { padding-right: 1em; }
+
+// Images
+.responsive > img { width: 100%; height: auto; };
+.contain { background-size: contain; };
+.overlay { box-shadow: inset 0 0 0 9999px $overlay; }
+
+// Text
+.left { text-align: left; }
+.right { text-align: right; }
+.center { text-align: center; }
+.justify { text-align: justify; }
+.primary { color: $primary; }
+.alt { color: $secondary; };
+.em { color: $tertiary; };
+.thin { font-weight: 200; }
+.huge { font-size: 2em; }
+.big { font-size: 1.5em; }
+.small { font-size: .8em; }
+.dark-bg { background-color: $dark; }
+.alt-bg { background-color: $secondary; };
+.rounded-profile img{
+  border-radius: 100%;
+  width: 50%;
+}
+// Simple 12-columns grid system
+.row {
+  width: 100%;
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+  &.table { display: table; };
+  &.table [class^="col-"] {
+    float: none;
+    display: table-cell;
+    vertical-align: inherit;
+  }
+}
+
+[class^="col-"] {
+  float: left;
+  &.inline-block {
+    float: none;
+    display: inline-block;
+  }
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {width: 100% / 12 * $i; }
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animation-fade {
+  animation-duration: 300ms;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+  .remark-visible & { animation-name: fadeIn; }
+}
+
+
+// Fix PDF print with chrome
+// ---------------------------------------------------------------------------
+
+@page {
+  // 908px 681px for 4/3 slides
+  size: 1210px 681px;
+  margin: 0;
+}
+
+@media print {
+  .remark-slide-scaler {
+    width: 100% !important;
+    height: 100% !important;
+    transform: scale(1) !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+}
+
+// Slide Types
+// ---------------------------------------------------------------------------
+// Additions
+.impact {
+  background-color: $black;
+  vertical-align: middle;
+  text-align: center;
+
+  h1 { font-size: $font-size-impact; }
+}
+
+.full {
+  &, h1, h2 { color: $text-light; }
+  &iframe {
+    height: calc(#{100%/$iframe-scale} - 1.2em);
+    width: 100%/$iframe-scale;
+    transform: scale($iframe-scale);
+    transform-origin: 0 0;
+    border: 0;
+  }
+}
+
+// Custom Code Styles
+// ---------------------------------------------------------------------------
+
+.remark-slide {
+  .remark-slide-content {
+    .remark-code {
+      font-size: 20px;
+      color: $text-light;
+      display: block;
+      overflow-x: auto;
+      background: $code-background;
+
+      .hljs-built_in,
+      .hljs-selector-tag,
+      .hljs-section,
+      .hljs-link {
+        color:  #98FB98;
+      }
+
+      .hljs-keyword {
+        color: #00E0E0;
+      }
+
+      .hljs,
+      .hljs-subst {
+        color: $text-light;
+      }
+
+      .hljs-title {
+        color: #FFA07A;
+      }
+
+      .hljs-string,
+      .hljs-meta,
+      .hljs-name,
+      .hljs-type,
+      .hljs-attr,
+      .hljs-symbol,
+      .hljs-bullet,
+      .hljs-addition,
+      .hljs-variable,
+      .hljs-template-tag,
+      .hljs-template-variable {
+        color: #FFD700;
+      }
+
+      .hljs-comment,
+      .hljs-quote,
+      .hljs-deletion {
+        color: #D2D7D3;
+      }
+
+      .hljs-keyword,
+      .hljs-selector-tag,
+      .hljs-literal,
+      .hljs-title,
+      .hljs-section,
+      .hljs-doctag,
+      .hljs-type,
+      .hljs-name,
+      .hljs-strong {
+        font-weight: bold;
+      }
+
+      .hljs-literal,
+      .hljs-number {
+        color: #bd93f9;
+      }
+
+      .hljs-emphasis {
+        font-style: italic;
+      }
+    }
+  }
+}
+
+// Custom Slide Styling
+// ---------------------------------------------------------------------------
+
+// Tweaks
+.logo img {
+  width: 150px;
+}
+
+.story {
+  h1 { margin-bottom: 1em; }
+  img { width: 50%; }
+}
+
