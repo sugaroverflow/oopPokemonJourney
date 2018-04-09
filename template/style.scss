@@ -5,8 +5,8 @@
 
 $primary          : #4EB4F8;
 $secondary        : #d5b546;
-$tertiary         : #91CD86;
-$quaternary       : #E7ACA2;
+$tertiary         : #E7ACA2;
+$quaternary       : #91CD86;
 $quinary          : #818DAD;
 $light            : #FFF;
 $dark             : #333;
@@ -108,12 +108,14 @@ blockquote {
 .no-padding { padding: 0; }
 .space-left { padding-left: 1em; }
 .space-right { padding-right: 1em; }
+.space-top { padding-top: 2em; }
 
 // Images
 .responsive > img { width: 100%; height: auto; };
 .contain { background-size: contain; };
 .overlay { box-shadow: inset 0 0 0 9999px $overlay; }
-
+.small > img { width: 40%; }
+.smaller > img { width: 20%;}
 // Text
 .left { text-align: left; }
 .right { text-align: right; }

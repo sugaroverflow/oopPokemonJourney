@@ -25,22 +25,6 @@ class: concept
 .col-6[
 .contain.rounded-profile[![photo of fatima](assets/fatima.jpeg)]
 ]
----
-
-# OOP is a way of organizing our code.
-## modular
-## reusable
-## flexible
-
-???
-
-- Instead of writing code for each trainer to be able to have a starter pokemon, do battle, and collect badges, we can create a 'trainer' class.
-
-- The trainer class can contain methods for doing battle, collecting badges, and catching pokemon. These are things that all trainers can do. The properties of a trainer might be their name and which city they came from - but each trainer can have a different name a different origin city.
-
-- In this OOP way, we can write one chunk of code to hanlde all the aspects of a trainer - without writing specific code for each trainer to be able to catch pokemon, do battle, etc.
-
-- Being able to create this container of a generic Pokemon trainer and extend it into specific cases is OOP. Instead of creating 3 separate pokemon trainers and building the functionality for having pokemon or badges three times, we can create one trainer and use it to share these traits.
 
 ---
 class: center, story
@@ -50,22 +34,36 @@ class: center, story
 .contain[![journey](assets/journey.png)]
 
 ???
-- Visit Prof Oak
+Today we are going to learn Object Oriented Programming from the perspective of Pokemon. We will go on a journey to become the best pokemon trainers and on the way, we will learn concepts of OOP.
+
+- All Pokemon journeys begin with Prof Oak
 - Choose our starter pokemon - Pikachu!
 - Let's take a look at our Pikachu to learn more about it.
 
 ---
 # Our first Pokemon!
+
+.col-6.space-top[
 ## Pikachu
 ### type: electric
 ### attack: thunderbolt
+]
+
+.col-6[
+ .contain[![pikachu](assets/pikachu.png)]
+]
+
 
 ???
-- electric pokemon
-- electric shock attack
+- Here's the data we have about our Pikachu
+- The type is electric
+- The attack is called Thunderbolt
 
-(T) Now we want to model this data in code
-OOP gives us a way of doing that called classes!
+Lets think of this as our data model. We currently have a *thing* called a Pokemon and it's got these two data points.
+
+(T) How can we model this data in code?
+ -> Classes!
+
 ---
 
 # Classes are like blueprints
@@ -77,14 +75,27 @@ OOP gives us a way of doing that called classes!
 
 
 ???
+- Properties are things like the name of our Pokemon or the type, something that describes it.
+- Methods are functions or actions that our class can do. For Pikachu, for example, it can attack.
 
 
-(T) Lets create a Pokemon class!
+(T) Let's go ahead and create our Pokemon class!
 
-----
-
+---
 # Creating a Pokemon Class
 
+```php
+class Pokemon {
+  public $name;
+  public $type;
+}
+```
+???
+- `class` keyword
+- two properties for the Pokemon class
+- (T) we also have one more data point, the pokemon's attack, which is a method.
+
+--
 ```php
 class Pokemon {
   public $name;
@@ -98,9 +109,26 @@ class Pokemon {
 ```
 
 ???
-(T) In order to create a pokemon and give it a name and type, we need to use something special - a constructor - a PHP magic method.
----
+- `function` keyword
+- The method body holds the functionality.
+- Sometimes functions return things - like in this case, the function is returning an attack function.
+- Sometimes functions can also have parameters. Our attack function doesn't have a parameter so lets look at an example that does have params.
 
+- (T) Parameters are variables that get passed
+
+--
+```php
+public function sleep($time_asleep) { ... }
+```
+
+???
+- Sometimes our pokemons have to sleep.
+- This sleep function has a parameter called $time_asleep that it probably does something special with.
+- A function can have both parameters and return something and can also have neither.
+
+(T) Now that we have a pokemon class with some basic properties and an attack function, we need one more thing to be able to create a Pokemon - a Constructor!
+
+---
 # Constructing a Pokemon
 ### PHP provides magic method: `__construct()`
 
@@ -109,8 +137,12 @@ class Pokemon {
   public $name;
   public $type;
 
-  public function __construct($name, $type)
-  {
+  public function attack() {
+    /* do stuff */
+    return $attack_stuff;
+  }
+
+  public function __construct($name, $type) {
       $this->name = $name;
       $this->type = $type;
   }
@@ -118,50 +150,76 @@ class Pokemon {
 ```
 
 ???
-(T) So now we have our class, how do we create an actual Pokemon object?
+- So here's our pokemon class again with the addition of a constructor.
+- A constructor is a cool thing called a "magic method" that's provided by PHP that allows to create "objects of a class"
 
+--
+### an *object* is an *instance* of a *class*
+
+???
+-  an object is an element (or instance) of a class
+- objects have the behaviors of their class.
+
+(T) So now we have our class and it's constructor, how do we create an actual Pokemon object?
 ---
 # Creating a Pokemon Object
 
 ```php
+public function __construct($name, $type) { ... }
+```
+--
+
+### Instantiating a Pokemon object:
+```php
 $pikachu = new Pokemon('Pikachu', 'Electric');
 ```
+--
+
+### Calling a method from the class:
 
 ```php
 $pikachu->attack();
 ```
 
-
 ???
+- recall our constructor from our Pokemon class had two variables passed into it which means we need these two variables to create a Pokemon.
+- `new` keyword to instantiate
+- now that we've created our pikachu, we can call methods that belong to the class.
+- but this is all pokemon right? Let's look at a real life example.
 
-(T) Lets take a look at an example of a class in Drupal core.
+(T) Now, lets take a look at an example of a class in Drupal core.
 ---
-# Classes & Objects in Drupal
+# Classes in Drupal (example)
 
 ```php
-class TranslatableMarkup extends FormattableMarkup { ... }
-
-```
-
-```php
-
-class Translation extends AnnotationBase {
-
-  protected $translation;
-
-  public function __construct() {
-    $this->translation = new TranslatableMarkup($string, $arguments, $options);
+class Link {
+  public function __construct($text, Url $url) {
+    $this->text = $text;
+    $this->url = $url;
   }
-
 }
-
 ```
 
 ???
 
+- Here's an example of a constructor from the Link class in Drupal core that takes two parameters $text, and a Url object $url. Don't worry about that object for now, lets focus on the constructor.
+- (T) Now lets look a place in core where this Link constructor is used to create a link!
 
-(T) Back to our story…
-We’ve been travelling for a while now… a wild Pokemon appears!
+--
+```php
+abstract class Entity implements EntityInterface {
+  public function toLink($text = NULL, $rel = 'canonical', array $options = []) {
+    // do stuff to variables
+    return new Link($text, $url);
+  }
+}
+```
+???
+- The Entity class' toLink Function returns a Link object that it creates from two variables, a text and a url.
+
+- Yay, we've looked at some basic stuff for classes. Now, we're going back to our story.
+
+(T) Pikachu and you have been travelling for a while now. Tonight, you're in the forest... and suddenly -a wild pokemon appears!
 
 ---
 class: center, story
@@ -170,23 +228,35 @@ class: center, story
 .center.contain[![wildpokemon](assets/wildpokemon.jpg)]
 
 ???
-- Pokemon battle
-- capture!
+- Battle!
+- And you win this battle and capture an Oddish!
+- Congrats!
+- But what's an oddish and what kind of attack does it have?
+
 (T) Lets analyze our Pokemon to understand them better
 
 ---
-## Pikachu
-### Electric
-### Thunderbolt
+# Our Pokemon
 
+.col-6[
+.small[![pikachu](assets/pikachu.png)]
+## Pikachu
+### type: Electric
+### attack: Thunderbolt
+]
+
+.col-6[
+.small[![oddish](assets/oddish.png)]
 ## Oddish
-### Grass
-### Poison Fire
+### type: Grass
+### attack: Poison Fire
+]
 
 ???
 
-- Lets map what we know
-- It looks like we might modify our Pokemon class to account for the different types and how they'll change in the future.
+- Here are the data points of our two pokemon!
+- They have different types and different attacks.
+- We are going to have to modify our Pokemon class to account for the different types and how they'll change in the future.
 - There's an OOP concept that makes this much easier for us - Inheritance!
 
 (T) Lets look at inheritance!
@@ -195,63 +265,106 @@ class: center, story
 # Inheritance is about sharing
 
 ## parent class
-- base class
-
 ## child classes
-- override methods or properties
+### - inherit methods from the parent class
+### - can override methods or properties
 
+--
+## PHP is a single inheritance language
 
 ???
-- Inheritance is…
--
+- Inheritance is a way that classes and objects relate to one another.
+- We have a parent class which defines certain properties and methods.
+- Child classes inherit from the parent class
+- which means they can inherit the methods
+- and/or override them if they would like
 
-(T) Let's look at some Pokemon Inheritance!
+One last thing before we look at an example is that PHP is a single inheritance language which means a class can only inherit from one parent class at a time.
+- but you can inherit from a class that inherits from another class, etc (inheritance inception! jk)
+
+(T) Now, let's look at some Pokemon Inheritance!
 
 
 ---
-# Parent Pokemon Class
+# Pokemon Inheritance
 
 ```php
-
 class Pokemon {
+  public $name;
+  public $type;
+
   public function attack() {
-    return $attack;
+    /* do stuff */
+    return $attack_stuff;
+  }
+
+  public function __construct($name, $type) {
+      $this->name = $name;
+      $this->type = $type;
   }
 }
 ```
 
----
+???
+- Here's our Pokemon class again with it's properties, the attack method and the constructor.
+- (T) To create a child class that inherits from this class, here's what we do:
 
-# Extending the Pokemon Class
+--
+```php
+
+class ElectricPokemon extends Pokemon { ... }
+```
+???
+- `extends` keyword
+- `ElectricPokemon` extends Pokemon - which means it's a child class of the parent class, Pokemon and can access all the stuff inside it.
+- But we can go one step further with this.
+
+(T) and create a Pikachu class! How you ask?
+
+
+---
+# Extending the Pokemon class
 
 ```php
 
 class ElectricPokemon extends Pokemon {
-  public function attack() {
-    return $electric_attack;
-  }
+  public $type = "Electric";
 }
-
 ```
 
----
-# Extending the ElectricPokemon class
+???
+- So we have our ElectricPokemon class that inherits from the Pokemon parent class.
+- (T) and then we make a Pikachu class to extend from ElectricPokemon:
+
+--
 
 ```php
 class Pikachu extends ElectricPokemon {
+  public $name = "Pikachu";
+
   public function attack() {
     return 'Thunderbolt!';
   }
 }
 ```
 
+--
+```php
+
+$pikachu = new Pikachu();
+$pikachu->attack(); // "Thunderbolt!"
+```
+
 ???
-- to change the behaviour of an existing method or property.
+- Now if you look closely at this inheritance chain, Pikachu extends ElectricPokemon which extends Pokemon - so Pikachu has access to the attack function.
+- and we want to change the behavior of the generic attack() function because we know Pikachu's attack is a thunderbolt.
+- so we *override* the parent attack method in our child class.
 
+- Now, if we want to create a Pikachu, we don't need to specify a name or a type because it's more specific of a class.
+- and when we call the attack function on Pikachu, it returns "Thunderbolt!" from the overridden attack function.
 
+(T) Now lets look at an example of inheritance in Drupal core!
 ---
-
-
 # Inheritance in Drupal
 
 ```php
@@ -263,6 +376,15 @@ interface WidgetInterface extends WidgetBaseInterface {
 ```php
 abstract class WidgetBase implements WidgetInterface { }
 ```
+???
+
+- So we have this WidgetInterface that has a formElement method.
+- And this WidgetInterface is implemented by WidgetBase (don't worry about implements too much, we'll get to it soon!)
+- What I want to you focus on here is that there's a relation between the WidgetBase where it's using the WidgetInterface.
+
+(T) and then finally...
+
+--
 
 ```php
 class RangeWidget extends WidgetBase {
@@ -274,12 +396,34 @@ class RangeWidget extends WidgetBase {
 }
 ```
 
+???
+- This RangeWidget Class *extends* the WidgetBase, which is has a connection to the WidgetInterface (remember) which gets RangeWidget the `formElement` function.
+- And since a range widget is a specific type of form widget that lets you enter a range, the function is overridden with that functionality.
+
+- (T) Now, there's one more small thing that I'd like to cover with interfaces - visibility.
+
+---
+# Visibility
+
+
+## public
+## protected
+## private
 
 
 ???
+- you may have seen the keyword `public` in our code previously -and now that we understand inheritance, we can talk about visibility.
+-  prefixing the declaration with the keywords:
+-  public, protected or private.
+- Class members declared public can be accessed everywhere.
+- Members declared protected can be accessed only within the class itself and by inheriting and parent classes.
+- Members declared as private may only be accessed by the class that defines the member.
 
-- Here formElement() actually comes from WidgetBaseInterface
+(T) Now that we understand inheritance and visibility, we can take our pokemons and get back on the road! In the newest town that we're visiting, we get challenged to a gym battle!
 
+
+--
+### child classes inherit all the *public* or *protected* properties of their parent class.
 ---
 class: story, center
 
@@ -288,72 +432,105 @@ class: story, center
 .contain[![battle](assets/battle.png)]
 
 ???
-- lose the battle
-- lack of strategy
-- need to learn more about the strengths and weakness of our pokemons
-  - add a weakness and strength property
+- We try our best, but we lose this battle.
+- It's mostly due to a lack of strategy
+- We know that our pokemon have different types and attacks, but we don't have to use those to our advantage.
+
+(T) From this battle, we've learned that pokemons have strengths and weaknesses. Lets update our data models.
 
 ---
 # Comparing our Pokemon
-## Pikachu
-### Water (str)
-### Ground (wkn)
 
+.col-6[
+.smaller[![pikachu](assets/pikachu.png)]
+## Pikachu
+### type: Electric
+### attack: Thunderbolt
+### strength: Water
+### weakness: Ground
+]
+
+.col-6[
+.smaller[![oddish](assets/oddish.png)]
 ## Oddish
-### Water (str)
-### Fire (wkn)
+### type: Grass
+### attack: Poison Fire
+### strength: Water
+### weakness: Fire
+]
 
 ???
-- Mapping what we know
-- Different pokemon have different str and wkn
+- So we've mapped the new data we know about our pokemons!
+- Different pokemons have different strengths and weakness based on their types.
 - If we want to add this to our pokemon class - we need to be able to retrieve this information quickly and easily.
 
-(T) PHP provides more magic methods for this!
+(T) To do this, we need to create getters and setters for our Pokemon class.
 
 ---
 
 # Getting data from our Pokemon
-## PHP magic methods:
--  `__get()`
--  `__set()`
 
 ```php
 
 class Pokemon {
+  // properties
+  // attack() method
+  // constructor
+
+  protected $weakness;
+  protected $strength;
 
   public function getWeakness() {
-    /* do something */
-    return $weakness;
+    /* do stuff */
+    return $this->weakness;
   }
 
   public function setStrength($strength) {
-    /* do something */
-    $this->strength = $strength;
+    /* do stuff */
+    $this->strength;
   }
-
 }
 ```
 
+???
+- Getters and setters look like regular methods
+- except that they are visibility public - so we can use them externally to get protected values from the class
+-  its best practice to use getters and setters within your own object rather than do stuff directly
+
+(T) Lets look at Getters and Setters with Inheritance
+
 ---
-# Getters and Setters in child classes:
+# In child classes
 
 ```php
 class ElectricPokemon extends Pokemon {
-
-  $str = 'grass';
-  $wkn = 'water';
-
-  // (constructor with name and type)
-
-  public function getStrength() {
-    return $this->str;
-  }
-  public function getWeakness() {
-    return $this->wkn;
-  }
+  protected $strength = 'grass';
+  protected $weakness = 'water';
+  // other properties and methods..
 }
 ```
+--
+```php
+class Pikachu extends ElectricPokemon {
+  // properties and attack() method.
+}
+```
+--
+```php
 
+$pikachu = new Pikachu();
+$pikachu->getWeakness(); // returns 'water';
+
+```
+
+???
+- So we added getWeakness() method to our Pokemon class
+- and if we set a weakness and strength in our Electric Pokemon class.
+- which our Pikachu class extends - so it has access to.
+
+- When we create a new pikachu object and call getWeakness() it returns the weakness we set in the parent class.
+
+(T) Lets take a look at some getters and setters in Drupal core.
 ---
 # Getters/Setters in Drupal
 
@@ -366,36 +543,50 @@ class RouteMatch implements RouteMatchInterface {
 }
 ```
 
+
+???
+- This is an example of something that I use almost on a daily basis. The RouteMatch class is a really useful service!
+- This particular function `getParameters()` allows us to get parameters in the URL of a page.
+
+(P-T) To use this service - and don't worry too much about the syntax just yet, we'll go over services a bit later - we call the method on the service.
+
+--
+
 ```php
 $params = \Drupal::routeMatch()->getParameters();
 ```
 
 ???
-An example that I've been using recently.
 
-(T) Now that we can get and set our strength, let's see how we use with our pokemon objects.
+(T) Let's take a recap of what we have for our Pokemon stuff.
 
 ---
 
-# Using a Pokemon object
+# Pokemon classes
+
+### `Class Pokemon`
+### `Class Electric Pokemon extends Pokemon`
+### `Class Pikachu extends ElectricPokemon`
+
+
+???
+- So this is what we have so far.
+(P-T) and here's what we can do with it.
+
+- But hey we don’t want to just create “Pokemon” anymore - Since we have the ability to create specific types.
+- How can we create only specific pokemon and lock down the parent Pokemon class so we can't create generic Pokemons?
+
+(T) OOP gives us a way of doing this called Interfaces.
+
+--
 
 ```php
 $pokemon = new Pokemon('Pikachu', 'Electric');
-$pokestr = $pokemon->getStrength();
+$pokemon->attack(); //returns a generic attack
+
+$pikachu = new Pikachu();
+$pikachu->attack(); // returns 'thunderbolt!'
 ```
-
-```php
-$pikachu = new ElectricPokemon('Pikachu');
-$pikachuStrength = $pikachu->getStrength();
-```
-
-???
-
-- but hey we don’t want to just create “Pokemon” anymore - since we have the ability to create specific types.
-- -generic pokemon can't be created, but specific pokemon types can be.
-
-
-(T) How do we create a class that can't be instantiated (or created an object of) --- OOP gives us this with Interfaces!
 
 ---
 
@@ -412,10 +603,9 @@ $pikachuStrength = $pikachu->getStrength();
 
 - generic pokemon can't be created, but specific pokemon types can be.
 
+(T) Lets look at our Pokemon Interface
 
 ---
-class: concept
-title: Pokemon | Interface
 
 # Creating a Pokemon Interface
 
@@ -435,55 +625,117 @@ interface PokemonInterface {
 }
 
 ```
+???
+- all methods are public
+- they're defined without any method body
 
+(T) And how can we now use this interface?
 ---
 # Implementing a Pokemon Interface
 
 ```php
-class ElectricPokemon implements PokemonInterface
+interface PokemonInterface {
+  public function getPokemonType();
+  /* more methods */
+}
+```
+--
+
+```php
+class ElectricPokemon implements PokemonInterface {
+  $type = 'Electric';
+  /* other properties and methods */
+
+  public function getPokemonType() {
+    return $this->type;
+  }
+}
 ```
 
 --
 
 ```php
-class Pikachu extends ElectricPokemon
-```
-
-???
-- to change the behavior of existing property or method in the new class
-- just overwrite in the new class with what you need
-
-- extends keyword
-- interface keyword
-- empty method bodies
-- pokemon - electric pokemon - pikachu.
-
-(T) Let's look a little more closely at our ElectricPokemon class implementing PokemonInterface
-
----
-
-# Implementing a Pokemon Interface
-
-```php
-class ElectricPokemon implements PokemonInterface {
-
-  public function getStrength() {
-    /* do something */
-    return 'Water';
-  }
-
-  public function getWeakness() {
-    /* do something */
-    return 'Grass';
+class Pikachu extends ElectricPokemon {
+  /* other properties and methods */
+  public function getPokemonType() {
+    return $this->type;
   }
 }
 ```
 
 ???
+- `implements` keyword
+- lets focus on just the `getPokemonType()` method
+- so Pikachu inherits from ElectricPokemon which implements the PokemonInterface
+- and so has to implement the functions.
 
-- Yay, we have a PokemonInterface now.
-- On we go.
+So now that we have a PokemonInterface we can't create generic Pokemons anymore. But do we want to create generic ElectricPokemons? Because that's weird too.
 
+Since we want to keep the functionality of having an ElectricPokemon Class, but we don't want to create objects of that class, we can make this class *abstract*
+
+(T) What's an abstract class?
+
+---
+# Abstract classes are like
+
+## blah
+## blah
+
+???
+Abstract Classes
+
+An abstract class can provide some functionality and leave the rest for derived class
+
+The derived class may or may not override the concrete functions defined in the base class
+
+A child class extended from an abstract class should logically be related
+
+
+---
+# Abstract ElectricPokemon Class
+
+```php
+interface PokemonInterface {
+  public function getPokemonType();
+}
+```
+
+???
+So here's our PokemonInterface with the `getPokemonType` method.
+
+--
+
+```php
+abstract class ElectricPokemon implements PokemonInterface {
+  public function getPokemonType() {
+    return 'Electric';
+  }
+}
+```
+
+???
+And here's our Electric Pokemon class
+- `abstract` keyword
+
+--
+```php
+class Pikachu extends ElectricPokemon { ... }
+```
+--
+
+```php
+$pikachu = new Pikachu();
+$pikachu->getPokemonType(); // returns 'Electric'
+```
+
+???
+- And finally, we have our Pikachu class which extends ElectricPokemon.
+- So the cool thing here is that we have an interface for all Pokemon behavior - but we can't instantiate an interface so we can't make generic Pokemon - GOOD.
+- And ElectricPokemon being an abstract class can't be instantiated either, but it can hold methods and properties that Pikachu can inherit.
+
+- So what happens if we try and call those methods from a Pikachu object? - We get Electric! From the ElectricPokemon class. Wohoo interitance and interfaces and abstract classes all working together.
+
+(T) Now we'll look at an example from Drupal Core.
 ---
 # Interfaces in Drupal
 
@@ -492,10 +744,20 @@ interface FormInterface {
   public function getFormId();
 }
 ```
+???
+Drupal core provides a FormInterface. One of the methods inside this interface is `getFormId()`.
+
+--
 
 ```php
 abstract class FormBase implements FormInterface { }
 ```
+
+???
+- The abstract class Formbase implements the FormInterface - so it has to define all of the method bodies. But since it's an abstract class, it needs to be extended to be used.
+
+--
+
 
 ```php
 class UserLoginForm extends FormBase {
@@ -505,6 +767,9 @@ class UserLoginForm extends FormBase {
 }
 ```
 
+???
+- Formbase is generally extended by actual forms, like the User Login Form class here.
+- Since the UserLoginForm extends FormBase, which implements FormInterface, it has to define the getFormId() function.
 
 
 ---
@@ -522,7 +787,31 @@ class: story, center
 - how can we model this ability to evolve without putting it in our base class.
 
 (T) PHP gives us this awesome ability to use snippets of code with Traits!
+---
+# Our Pokemon is Evolving!
 
+.col-6[
+.small[![charmeleon](assets/charmeleon.png)]
+## Charmeleon
+## type: Fire
+## attack:
+]
+
+.col-6[
+.small[![oddish](assets/charizard.png)]
+## Charizard
+## type: fire
+## attack:
+]
+
+???
+- to change it up a little lets look at our Charmeleon
+- we won this guy in a random battle encounter by the volano ruins
+- our Charmeleon is evolving to a Charizard! (super awesome!)
+
+- For example, our Charmeleon evolves when it reaches a certain level - because we've been training it well, but some water pokemon need special stones to evolve.
+
+(T)  How can we model this evolution in our code? Since not all pokemon evolve - and they don't all  evolve in the same way.
 ---
 
 # Traits are like code snippets
@@ -542,10 +831,9 @@ class: story, center
 # Creating a Pokemon Evolution Trait
 
 ```php
-trait PokemonEvolutionTrait {
-
-  public function evolvesTo() {
-    return $nextPokemonStage;
+trait PokeEvolutionTrait {
+  public function evolve() {
+    return new $this->nextStage;
   }
 }
 ```
@@ -553,16 +841,34 @@ trait PokemonEvolutionTrait {
 --
 
 ```php
-class Poliwhirl extends WaterPokemon {
-  use EvolutionTrait;
-
-  public function evolve() {
-    // to figure out the next evolution stage
-    $nextStage = $this->evolvesTo();
-  }
+class Charmeleon extends FirePokemon {
+  use PokeEvolutionTrait;
+  public $nextStage = 'Charizard';
 }
 ```
 
+--
+```php
+class Charizard extends FirePokemon { ... }
+
+```
+
+--
+```php
+$charmeleon = new Charmeleon();
+$charmeleon->evolve(); // Returns a Charizard object!
+
+```
+
+
+???
+- `use` keyword
+- defining the PokeEvolutionTrait
+- with an evolve function that returns the nextStage in evolution.
+
+- and inheritance lalala.
+
+(T) Lets look at an example of Traits in Drupal
 ---
 
 # Traits in Drupal
@@ -577,12 +883,17 @@ trait StringTranslationTrait {
 }
 ```
 
+???
+- Look at the string translation trait
+--
+
 ```php
 abstract class PluginBase extends ComponentPluginBase {
   use StringTranslationTrait;
 }
 ```
-
+???
+- much wow
 
 ---
 class: story, center
@@ -592,11 +903,13 @@ class: story, center
 ![won badge](assets/badge.jpg)
 
 ???
+- you’ve won your first badge!
+- there needs to be a system to earn badges
+- badge system is a functionality that can change because different badges will have different requirements to earn them.
 
-
+(T) Plugins!
 
 ---
-
 
 # plugins are like functional lego blocks
 
@@ -605,46 +918,10 @@ class: story, center
 
 
 ???
-
 Plugins implement different behaviors via a common interface.
-
+- There are many different existing types of plugins:
 - annotated, yaml (menus, routes, and services), hook, discovery, static
-
-There are many types of plugins - we're going to focus on the "annotated type" for things like blocks, views, rules.
-
-
-
-(T) Lets take a look at what a Pokemon plugin for managing badges would look like
-
----
-
-# Pokemon | Plugins
-
-```php
-
-abstract class PokeBadgePluginBase extends PluginBase
- implements PokePluginInterface {
-    abstract public function isBadgeEarned();
-}
-
-```
-
---
-
-```php
-
-class DrupalBadge extends PokeBadgePluginBase {
-  public function isBadgeEarned(){
-    // do stuff
-    return TRUE;
-  }
-}
-
-```
-
-???
-In order to make a custom plugin, we'd have to do a couple of things, but to save some time we're going to assume there exists a PokeBadgePluginBase which provides the functionality which means the interface and the base are also provided (this is making an assumption)
-
+- And making a custom plugin takes a lot of work. You have to create a plugin manager, a plugin base, a plugin interface and a bunch of other things. It's not likely that we would need to do this.
 - to create a custom plugin:
 Annotation Plugin Definition
 Plugin Manager Service
@@ -653,50 +930,85 @@ Plugin Base
 Example Implementation
 Controller (optional)
 
-(T) Lets look at an example in Drupal
----
+-There are whole talks about creating custom plugins. Drupalize me does a great post about "Unwraveling the Plugin System in D8" using an ice cream shop as a metaphor for creating the components of a custom plugin.
 
-# Plugins in Drupal
+- So since we can't create a custom Pokemon Badge plugin, let's look at something a little simpler. We will extend an existing Plugin type in Drupal 8
+
+(T) We're going to shift gears here and do a combination of Drupal & Pokemon code now. We're going to extend an existing plugin - the Block plugin.
+
+
+---
+# Pokemon Profile Block
 
 ```php
-abstract class BlockBase {
-    public function build() {
-      // does basic stuff
-      return $build;
-    }
-}
+/**
+ * Provides a 'PokemonProfileBlock' block.
+ *
+ * @Block(
+ *  id = "pokemon_profile_block",
+ *  admin_label = @Translation("Profile Block for a Pokemon"),
+ * )
+ */
+class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface { ... }
 ```
 
+## Annotations-based plugins
+### annotation data lives in the same file
+### allows for complex nested data
+
+???
+- a block is what we call an annotation based plugin
+- an annotation - this key value structure in the comment you see above the class definition there, starting with the @ Block which implies this is a block plugin type.
+- We'll go into more detail about what goes into the class, but first I want to point out what an annotation is.
+
+- The annotation meta-data lives in the same file and is an integral part of the class that implements the plugin
+- allows for complex structured data aka nesting
+- you can indicate strings for translation
+- makes Drupal use less memory when discovering plugins
+
+---
+# Pokemon Profile Block
+
 ```php
-class CustomBlock extends BlockBase {
+/**
+ * (annotation here)
+ */
+class PokemonProfileBlock extends BlockBase {
+
   public function build() {
-    // custom stuff
-    return $build;
+    $render = [];
+
+    // build $stuff of pokemon info.
+
+    $render['pokemon_container'] = [
+      '#type' => 'container',
+      '#markup' => $stuff,
+    ];
+
+    return $render;
   }
 }
 ```
 
 ???
-
-annotated plugin - most common
-
-drupal provides a lot of plugin bases.
-Most plugins will contain a fair amount of boiler plate code that is the same for almost all plugins of that type,
+- removed the annotation to make space for the code but it's still there.
+- So we're making this block to display a profile for our pokemons. We extend the BlockBase plugin and in the $build function that blockBase provides we can build a container of some markup and display it on a page.
+- And just to recap, we did this because creating custom plugins requires a lot of components and isnt' really a beginner topic, so to use plugins, we'd rather extend an existing plugin type - aka blocks.
 
 (T) Back to story!
 ---
 class: story, center
 
-# To be the very best
-.contain[![league](assets/trainercard_card.png)]
+# Pokemon Leagues
 
-???
+## To be the very best
+
+.contain[![league](assets/trainercard_card.png)]
 
 ???
 Now that you've won a lot of battles and some fame, you've been invited to compete!
 
-
-Before you can join the competition, you need to submit your pokemon trainer profile with all of your pokemon's stats.
+Before you can join the competition, you need to submit your pokemon trainer card with all of your pokemon's stats.
 
 Let's say we've been saving those stats into a database somewhere - and now, we want to retrieve them.
 
@@ -727,7 +1039,17 @@ package reusable functionality in one place to perform an operation like sending
 # Creating a Pokemon Service
 
 ```php
+interface PokeDataInterface {
+   public function getYearlyStats(PokemonInterface $pokemon, int $year);
+}
 
+```
+???
+- an interface for
+
+--
+
+```php
 class PokeDataService implements PokeDataInterface {
 
   public function getYearlyStats(PokemonInterface $pokemon, int $year) {
@@ -752,7 +1074,7 @@ Our service then implements this interface and provides the functionality.
 # Calling our Pokemon Service
 
 ```php
-$pikachu = new Pokemon('Pikachu', 'Electric');
+$pikachu = new Pikachu();
 
 ```
 
@@ -783,9 +1105,13 @@ $data = $pokeDataHelper->getYearlyStats($pikachu, '2018');
     class: Drupal\Core\Session\AccountProxy
 ```
 
+--
+
 ```php
-$user = \Drupal\user\Entity\User::load(\Drupal::currentUser();
+$current_user = \Drupal::service('current_user');
+// access something from the $current_user
 ```
+
 
 ---
 
@@ -822,49 +1148,105 @@ class ContactFormEditForm extends EntityForm {
 - dependency injection
 - using services.
 
-(T) So how do we inject our Pokemon Service?
----
-# Pokemon Dependency Injection
+- Do you remember our Pokemon Profile Block?
+(P-T) For a refresher, here's how we use our service globally:
+
+--
 
 ```php
-use Drupal\pokemon\PokeDataService;
+$pokeDataService = \Drupal::service('pokemon.pokedataservice');
+```
+???
 
-class ElectricPokemon extends Pokemon {
+(T) But now let's look how we can use dependency injection to load our service into our Pokemon Profile Block.
 
-  protected $PokeDataService;
+---
+# Injecting the pokeDataService I
+```php
+/**
+ * (annotation here)
+ */
+class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface {
+  // do stuff
+}
+```
+???
+- The first step is that your custom block needs to extend the ContainerFactoryPluginInterface.
+- Why?
 
-  public function __construct(PokeDataInterface $PokeDataService) {
-    $this->$PokeDataService = $PokeDataService;
+---
+# Injecting the pokeDataService II
+
+```php
+/**
+ * (annotation here)
+ */
+class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface {
+  protected $pokeDataService;
+
+  public function __construct( PokeDataInterface $pokeDataService) {
+    $this->pokeDataService = $pokeDataService;
+  }
+}
+```
+???
+- Step 2: add the constructor
+- talk about the blockbase params.
+- parent:: constructor call.
+
+---
+# Injecting the pokeDataService III
+
+```php
+/**
+ * (annotation here)
+ */
+class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface {
+  protected $pokeDataService;
+
+  public function __construct( PokeDataInterface $pokeDataService) {
+    $this->pokeDataService = $pokeDataService;
   }
 
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('pokemon.pokedataservice')
+      $container->get('pokemon.pokedataservice'),
     );
   }
 }
 ```
+???
+- Step 3 - the create function
+- From the services container, load the pokedataservice
 
 ---
-
-# Injecting services in Drupal
+# Injecting the pokeDataService IV
 
 ```php
-class myCustomForm extends FormBase {
+/* (annotation here) */
+class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface {
+  protected $pokeDataService;
 
-  protected $account;
-
-  public function __construct(AccountInterface $account) {
-    $this->account = $account;
+  public function __construct( PokeDataInterface $pokeDataService) {
+    $this->pokeDataService = $pokeDataService;
   }
 
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('current_user')
+      $container->get('pokemon.pokedataservice'),
     );
+  }
+
+  public function build() {
+    $pokeDataService->getYearlyStats($this->pokemon, '2018');
+    // do block stuff
   }
 }
 ```
+???
+- Step 3 - the create function
+- From the services container, load the pokedataservice
+
 
 ---
 class: story, center
@@ -877,7 +1259,17 @@ class: story, center
 
 - I hope this session helps to provide a foundation for the basics and from there you can build as you learn.
 
+
 ---
 # Thank you!
-## @sugaroverflow
-### bit.ly/oop-midcamp-2018
+
+.col-8.space-top[
+  ## slides: bit.ly/slideslink
+  ## feedback:
+  ### special thank you to @cottser
+]
+
+.col-4[
+.responsive[![pikachu-on-pokeball](assets/pikachupokeball.jpg)]
+]
+

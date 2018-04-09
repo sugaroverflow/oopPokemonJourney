@@ -16,7 +16,7 @@ h2 {
   color: #d5b546; }
 
 h3 {
-  color: #91CD86; }
+  color: #E7ACA2; }
 
 li {
   margin-bottom: .25em; }
@@ -36,7 +36,7 @@ img {
 blockquote {
   border-left: 8px solid;
   padding-left: .5em;
-  color: #91CD86;
+  color: #E7ACA2;
   text-align: left;
   margin: 1em 0; }
   blockquote > p {
@@ -101,6 +101,9 @@ blockquote {
 .space-right {
   padding-right: 1em; }
 
+.space-top {
+  padding-top: 2em; }
+
 .responsive > img {
   width: 100%;
   height: auto; }
@@ -110,6 +113,12 @@ blockquote {
 
 .overlay {
   box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.5); }
+
+.small > img {
+  width: 40%; }
+
+.smaller > img {
+  width: 20%; }
 
 .left {
   text-align: left; }
@@ -130,7 +139,7 @@ blockquote {
   color: #d5b546; }
 
 .em {
-  color: #91CD86; }
+  color: #E7ACA2; }
 
 .thin {
   font-weight: 200; }
