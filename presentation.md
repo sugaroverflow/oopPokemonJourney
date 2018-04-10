@@ -1250,7 +1250,7 @@ I wish I could give everyone a drupal badge!
 # Thank you!
 
 .col-8.space-top[
-  ## slides: bit.ly/slideslink
+  ## slides: bit.ly/oop-pokemon-nashville-2018
   ## keep in touch! @sugaroverflow
   ### special thank you to @cottser
 ]
