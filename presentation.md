@@ -1251,7 +1251,7 @@ I wish I could give everyone a drupal badge!
 
 .col-8.space-top[
   ## slides: bit.ly/slideslink
-  ## feedback:
+  ## keep in touch! @sugaroverflow
   ### special thank you to @cottser
 ]
 
