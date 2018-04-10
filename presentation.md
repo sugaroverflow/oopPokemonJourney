@@ -13,13 +13,10 @@ class: concept
 
 # Hi I'm Fatima
 
-.col-6[
+.col-6.space-top[
 ## @sugaroverflow
-- Digital Echidna
-- Drupal Diversity & Inclusion
-
-.logo[![DE logo](assets/de_logo.png)]
-.logo[![DD&I logo](assets/ddi_logo.png)]
+### Digital Echidna
+### Drupal Diversity & Inclusion
 ]
 
 .col-6[
@@ -112,19 +109,6 @@ class Pokemon {
 - `function` keyword
 - The method body holds the functionality.
 - Sometimes functions return things - like in this case, the function is returning an attack function.
-- Sometimes functions can also have parameters. Our attack function doesn't have a parameter so lets look at an example that does have params.
-
-- (T) Parameters are variables that get passed
-
---
-```php
-public function sleep($time_asleep) { ... }
-```
-
-???
-- Sometimes our pokemons have to sleep.
-- This sleep function has a parameter called $time_asleep that it probably does something special with.
-- A function can have both parameters and return something and can also have neither.
 
 (T) Now that we have a pokemon class with some basic properties and an attack function, we need one more thing to be able to create a Pokemon - a Constructor!
 
@@ -269,15 +253,18 @@ class: center, story
 ### - inherit methods from the parent class
 ### - can override methods or properties
 
---
-## PHP is a single inheritance language
-
 ???
 - Inheritance is a way that classes and objects relate to one another.
 - We have a parent class which defines certain properties and methods.
 - Child classes inherit from the parent class
 - which means they can inherit the methods
 - and/or override them if they would like
+
+
+--
+## PHP is a single inheritance language
+
+???
 
 One last thing before we look at an example is that PHP is a single inheritance language which means a class can only inherit from one parent class at a time.
 - but you can inherit from a class that inherits from another class, etc (inheritance inception! jk)
@@ -334,7 +321,7 @@ class ElectricPokemon extends Pokemon {
 
 ???
 - So we have our ElectricPokemon class that inherits from the Pokemon parent class.
-- (T) and then we make a Pikachu class to extend from ElectricPokemon:
+- (T) and then we make a Pikachu object
 
 --
 
@@ -487,7 +474,7 @@ class Pokemon {
 
   public function setStrength($strength) {
     /* do stuff */
-    $this->strength;
+    $this->strength = $strength;
   }
 }
 ```
@@ -509,12 +496,23 @@ class ElectricPokemon extends Pokemon {
   // other properties and methods..
 }
 ```
+
+???
+- ElectricPokemon is extending pokemon
+- and defining it's strengths and weaknesses.
+
+(T) One more step into inheritance would be the Pikachu class.
 --
 ```php
 class Pikachu extends ElectricPokemon {
   // properties and attack() method.
 }
 ```
+
+???
+- and here, note that we aren't defining those getters and setters.
+
+(T) Go ahead and create a pikachu object.
 --
 ```php
 
@@ -565,13 +563,14 @@ $params = \Drupal::routeMatch()->getParameters();
 # Pokemon classes
 
 ### `Class Pokemon`
-### `Class Electric Pokemon extends Pokemon`
+### `Class ElectricPokemon extends Pokemon`
 ### `Class Pikachu extends ElectricPokemon`
 
 
 ???
 - So this is what we have so far.
-(P-T) and here's what we can do with it.
+- overview
+- (P-T) and here's what we can do with it.
 
 - But hey we don’t want to just create “Pokemon” anymore - Since we have the ability to create specific types.
 - How can we create only specific pokemon and lock down the parent Pokemon class so we can't create generic Pokemons?
@@ -676,10 +675,11 @@ Since we want to keep the functionality of having an ElectricPokemon Class, but 
 (T) What's an abstract class?
 
 ---
-# Abstract classes are like
+# Abstract classes are like skeletons
 
-## blah
-## blah
+## provide *some* functionality
+## commonly used as base classes
+## can never been instantiated
 
 ???
 Abstract Classes
@@ -780,7 +780,7 @@ class: story, center
 .contain[![evolve](assets/evolve.jpg)]
 
 ???
-- suddenly, your Poliwhirl is evolving -> Poliwrath - awesome!
+- our Charmeleon is evolving to a Charizard!
 - but how can we add this ability to our Pokemon classes?
 - Not all Pokemon can evolve so we can't add to the interface.
 - some evolve in different ways - stone, battle, etc and this depends on the exact Pokemon - not the type.
@@ -809,8 +809,6 @@ class: story, center
 - we won this guy in a random battle encounter by the volano ruins
 - our Charmeleon is evolving to a Charizard! (super awesome!)
 
-- For example, our Charmeleon evolves when it reaches a certain level - because we've been training it well, but some water pokemon need special stones to evolve.
-
 (T)  How can we model this evolution in our code? Since not all pokemon evolve - and they don't all  evolve in the same way.
 ---
 
@@ -838,6 +836,13 @@ trait PokeEvolutionTrait {
 }
 ```
 
+???
+- pokeevolutiontrait
+- has an evolve function
+- which returns a new pokemon
+- of the nextStage that it is used on or the nextStage of _this_ which is the pokemon this evolve function will be called on.
+
+(T) So how do we use a trait?
 --
 
 ```php
@@ -846,13 +851,20 @@ class Charmeleon extends FirePokemon {
   public $nextStage = 'Charizard';
 }
 ```
-
+???
+- So here's the charmeleon class which extends firepokemon
+- we use the `use` keyword to signify we are using the trait.
+- here we're defining a property for the next stage.
+(T) and we need the Charizard class
 --
 ```php
 class Charizard extends FirePokemon { ... }
 
 ```
 
+???
+- There should also be a class for the next stage of pokemon - lets assume there's stuff in there for now.
+(T) now if we create a charmeleon and try to evolve it.
 --
 ```php
 $charmeleon = new Charmeleon();
@@ -862,11 +874,7 @@ $charmeleon->evolve(); // Returns a Charizard object!
 
 
 ???
-- `use` keyword
-- defining the PokeEvolutionTrait
-- with an evolve function that returns the nextStage in evolution.
-
-- and inheritance lalala.
+- it returns a charizard!
 
 (T) Lets look at an example of Traits in Drupal
 ---
@@ -904,6 +912,7 @@ class: story, center
 
 ???
 - you’ve won your first badge!
+- how to model this in our code
 - there needs to be a system to earn badges
 - badge system is a functionality that can change because different badges will have different requirements to earn them.
 
@@ -921,8 +930,9 @@ class: story, center
 Plugins implement different behaviors via a common interface.
 - There are many different existing types of plugins:
 - annotated, yaml (menus, routes, and services), hook, discovery, static
-- And making a custom plugin takes a lot of work. You have to create a plugin manager, a plugin base, a plugin interface and a bunch of other things. It's not likely that we would need to do this.
-- to create a custom plugin:
+- And making a custom plugin takes a lot of work:
+
+To create a custom plugin:
 Annotation Plugin Definition
 Plugin Manager Service
 Plugin Interface
@@ -930,9 +940,11 @@ Plugin Base
 Example Implementation
 Controller (optional)
 
--There are whole talks about creating custom plugins. Drupalize me does a great post about "Unwraveling the Plugin System in D8" using an ice cream shop as a metaphor for creating the components of a custom plugin.
+It's rare.
 
-- So since we can't create a custom Pokemon Badge plugin, let's look at something a little simpler. We will extend an existing Plugin type in Drupal 8
+- There are whole talks about creating custom plugins. Drupalize me does a great post about "Unwraveling the Plugin System in D8" using an ice cream shop as a metaphor for creating the components of a custom plugin.
+
+- So today, we aren't going to be able to create a custom Drupal Badge plugin, but we can look at something a little simpler. We can extend an existing Plugin type in Drupal 8
 
 (T) We're going to shift gears here and do a combination of Drupal & Pokemon code now. We're going to extend an existing plugin - the Block plugin.
 
@@ -949,7 +961,7 @@ Controller (optional)
  *  admin_label = @Translation("Profile Block for a Pokemon"),
  * )
  */
-class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface { ... }
+class PokemonProfileBlock extends BlockBase { ... }
 ```
 
 ## Annotations-based plugins
@@ -965,6 +977,8 @@ class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInt
 - allows for complex structured data aka nesting
 - you can indicate strings for translation
 - makes Drupal use less memory when discovering plugins
+
+(T) Lets take a closer look at what goes inside this Pokemon Profile block.
 
 ---
 # Pokemon Profile Block
@@ -1045,7 +1059,11 @@ interface PokeDataInterface {
 
 ```
 ???
-- an interface for
+- an interface for getting pokemon data
+- an example of one of the methods it might have is getyearlystats
+- since interface, no code
+
+(T) if this is the interface, what does the service look like?
 
 --
 
@@ -1064,8 +1082,6 @@ class PokeDataService implements PokeDataInterface {
 
 we are going to make the assumption that there exists a "PokeDataInterface" which defines an interface for generating data from the pokedatabase for pokemons.
 
-Lets say we want to scope out some data on our opponents.
-
 Our service then implements this interface and provides the functionality.
 
 (T) How do we call our service?
@@ -1077,19 +1093,26 @@ Our service then implements this interface and provides the functionality.
 $pikachu = new Pikachu();
 
 ```
-
+???
+- create pikachu object
+(P-T) how do we load the service?
 --
 
 ```php
 $pokeDataHelper= \Drupal::service('pokemon.pokedataservice');
 ```
-
+???
+- globally loading the service by it's ID
+(P-T) now we want to call a method from the service
 --
 
 ```php
 $data = $pokeDataHelper->getYearlyStats($pikachu, '2018');
 ```
+???
+- calling the method from the service and passing the parameters retuns me the data.
 
+(T) Services in Drupal
 
 ---
 
@@ -1104,6 +1127,11 @@ $data = $pokeDataHelper->getYearlyStats($pikachu, '2018');
   current_user:
     class: Drupal\Core\Session\AccountProxy
 ```
+???
+- Drupal core provides a LOT of services you can use
+- one common one is the current_user service
+- provided by the AccountProxy class
+(P-T) - how do we load the service globally?
 
 --
 
@@ -1111,26 +1139,12 @@ $data = $pokeDataHelper->getYearlyStats($pikachu, '2018');
 $current_user = \Drupal::service('current_user');
 // access something from the $current_user
 ```
+???
+- same way of calling it by ID
+- and then you can do stuff.
 
+(T) So I keep saying this "load globally thing" but what's the best way to load our services?
 
----
-
-# Services in Drupal are swappable
-
-```php
-  email.validator:
-    class: Egulias\EmailValidator\EmailValidator
-```
-
-```php
-class ContactFormEditForm extends EntityForm {
-
-  if ($this->emailValidator->isValid($recipient)) {
-      //do stuff
-  }
-
-}
-```
 
 ---
 
@@ -1149,19 +1163,10 @@ class ContactFormEditForm extends EntityForm {
 - using services.
 
 - Do you remember our Pokemon Profile Block?
-(P-T) For a refresher, here's how we use our service globally:
-
---
-
-```php
-$pokeDataService = \Drupal::service('pokemon.pokedataservice');
-```
-???
-
-(T) But now let's look how we can use dependency injection to load our service into our Pokemon Profile Block.
+(T) Let's inject our dataService into the block to use it to display stats.
 
 ---
-# Injecting the pokeDataService I
+# Injecting the pokeDataService
 ```php
 /**
  * (annotation here)
@@ -1172,10 +1177,13 @@ class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInt
 ```
 ???
 - The first step is that your custom block needs to extend the ContainerFactoryPluginInterface.
-- Why?
+- The key to making plugins use dependency injection is to implement the ContainerFactoryPluginInterface.
+- When plugins are created, the code first checks if the plugin implements this interface. If it does, it uses the create() and __construct() pattern
+
+(T) Lets start with the constructor
 
 ---
-# Injecting the pokeDataService II
+# Injecting the pokeDataService
 
 ```php
 /**
@@ -1190,12 +1198,11 @@ class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInt
 }
 ```
 ???
-- Step 2: add the constructor
-- talk about the blockbase params.
-- parent:: constructor call.
+- The constructor, loading the service property.
+(T) Lets now add the create() function:
 
 ---
-# Injecting the pokeDataService III
+# Injecting the pokeDataService
 
 ```php
 /**
@@ -1216,48 +1223,27 @@ class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInt
 }
 ```
 ???
-- Step 3 - the create function
+- create()
 - From the services container, load the pokedataservice
+- and do stuff
 
----
-# Injecting the pokeDataService IV
+(T) Andddd that's dependency injection - you've got this!
 
-```php
-/* (annotation here) */
-class PokemonProfileBlock extends BlockBase implements ContainerFactoryPluginInterface {
-  protected $pokeDataService;
-
-  public function __construct( PokeDataInterface $pokeDataService) {
-    $this->pokeDataService = $pokeDataService;
-  }
-
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('pokemon.pokedataservice'),
-    );
-  }
-
-  public function build() {
-    $pokeDataService->getYearlyStats($this->pokemon, '2018');
-    // do block stuff
-  }
-}
-```
-???
-- Step 3 - the create function
-- From the services container, load the pokedataservice
-
-
+And so...
 ---
 class: story, center
 # The Adventure Continues
 
 .contain[![adventure continues](assets/topdown.png)]
-
+#### >> continue
 ???
 - There's a lot out there in OOP and as you do more backend work, you'll discover new and interesting things! and the OOP adventure will continue.
 
-- I hope this session helps to provide a foundation for the basics and from there you can build as you learn.
+- and that each of everyone of you has the potential to write OOP and backend code - I know you do.
+
+- I hope this session helps to provide a foundation for the basics and form some ideas and mappings from which you can build and learn and grow. I know that each of you has the potential to be awesome object oriented programmers, so hang in there you got this!
+
+I wish I could give everyone a drupal badge!
 
 
 ---
@@ -1272,4 +1258,6 @@ class: story, center
 .col-4[
 .responsive[![pikachu-on-pokeball](assets/pikachupokeball.jpg)]
 ]
+
+# Questions?
 
